@@ -172,3 +172,8 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+
+## Ceneo Web Scraper
+app/data/
+config.py
