@@ -62,7 +62,30 @@ def extract():
 
 @app.route("/products")
 def products():
-    return render_template("products.html")
+    products_list = []
+    opinions_dir = "./app/data/opinions"
+    for filename in os.listdir(opinions_dir):
+        if filename.endswith(".json"):
+            product_id = filename.replace(".json", "")
+            with open(os.path.join(opinions_dir, filename), "r", encoding="utf-8") as f:
+                opinions = json.load(f)
+                opinion_count = len(opinions)
+                stars = []
+                pros = 0
+                cons = 0
+                for o in opinions:
+                    stars.append(float(o["stars"].split("/")[0].replace(",", ".")) if o["stars"] else 0)
+                    pros += len(o["pros"]) if o.get("pros") else 0
+                    cons += len(o["cons"]) if o.get("cons") else 0
+                avg_rating = round(sum(stars)/len(stars), 2) if stars else 0
+                products_list.append({
+                    "id": product_id,
+                    "name": opinions[0].get("content", "Nieznany"),
+                    "opinion_count": opinion_count,
+                    "avg_rating": avg_rating
+                })
+    return render_template("products.html", products=products_list)
+
 
 @app.route("/author")
 def author():
@@ -70,6 +93,22 @@ def author():
 
 @app.route("/product/<product_id>")
 def product(product_id):
-    product_name = request.args.get('product_name')
-    opinions = pd.read_json(f"./app/data/opinions/{product_id}.json")
-    return render_template("product.html", product_id=product_id, product_name=product_name, opinions=opinions.to_html(classes="display", table_id="opinions")) 
+    product_name = request.args.get("product_name", "Nieznany")
+    df = pd.read_json(f"./app/data/opinions/{product_id}.json")
+
+    opinion_count = len(df)
+    stars = df["stars"].dropna().apply(lambda x: float(x.split("/")[0].replace(",", ".")))
+    avg_rating = round(stars.mean(), 2) if not stars.empty else "brak danych"
+    pros_count = df["pros"].dropna().apply(len).sum()
+    cons_count = df["cons"].dropna().apply(len).sum()
+
+    return render_template(
+        "product.html",
+        product_id=product_id,
+        product_name=product_name,
+        opinions=df.to_html(classes="display", table_id="opinions"),
+        avg_rating=avg_rating,
+        opinion_count=opinion_count,
+        pros_count=pros_count,
+        cons_count=cons_count
+    )

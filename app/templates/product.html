@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
 {% block title %} {{product_id}} - {{product_name}} {% endblock %}
 {% block content %}
-    {{opinions|safe}}
-{% endblock %}
-{% block script %}
-<script>
-    let table = new DataTable('#opinions', {
-        // options
-    });
-</script>
+<h3>Opinie o produkcie</h3>
+
+<h4>Statystyki</h4>
+<ul>
+  <li>Średnia ocena: {{ avg_rating }}</li>
+  <li>Liczba opinii: {{ opinion_count }}</li>
+  <li>Liczba zalet: {{ pros_count }}</li>
+  <li>Liczba wad: {{ cons_count }}</li>
+</ul>
+
+{{ opinions|safe }}
 {% endblock %}

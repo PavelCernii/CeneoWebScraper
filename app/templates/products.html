@@ -1,5 +1,27 @@
 {% extends 'base.html' %}
-{% block title %} {% endblock %}
+{% block title %}Lista produktów{% endblock %}
 {% block content %}
-    
+<h3>Produkty z zapisanymi opiniami</h3>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>ID produktu</th>
+      <th>Liczba opinii</th>
+      <th>Średnia ocena</th>
+      <th>Akcje</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product in products %}
+    <tr>
+      <td><a href="{{ url_for('product', product_id=product.id, product_name=product.name) }}">{{ product.id }}</a></td>
+      <td>{{ product.opinion_count }}</td>
+      <td>{{ product.avg_rating }}</td>
+      <td>
+        <a href="{{ url_for('product', product_id=product.id, product_name=product.name) }}" class="btn btn-primary btn-sm">Zobacz</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endblock %}
