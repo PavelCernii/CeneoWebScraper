@@ -1,15 +1,34 @@
 {% extends 'base.html' %}
-{% block title %} {{product_id}} - {{product_name}} {% endblock %}
+
+{% block page_title %}Opinie – {{ product_id }}{% endblock %}
+{% block header_title %}Opinie o produkcie – {{ product_name }}{% endblock %}
+
 {% block content %}
-<h3>Opinie o produkcie</h3>
+<h3 class="mb-3">Opinie o produkcie</h3>
 
 <h4>Statystyki</h4>
-<ul>
-  <li>Średnia ocena: {{ avg_rating }}</li>
-  <li>Liczba opinii: {{ opinion_count }}</li>
-  <li>Liczba zalet: {{ pros_count }}</li>
-  <li>Liczba wad: {{ cons_count }}</li>
+<ul class="mb-4">
+  <li>Średnia ocena: <span class="badge bg-ceneo">{{ avg_rating }}</span></li>
+  <li>Liczba opinii: <span class="badge bg-primary">{{ opinion_count }}</span></li>
+  <li>Liczba zalet: <span class="badge bg-success">{{ pros_count }}</span></li>
+  <li>Liczba wad: <span class="badge bg-danger">{{ cons_count }}</span></li>
 </ul>
 
-{{ opinions|safe }}
+<h4>Tabela opinii</h4>
+<div id="opinions" class="mb-4">
+  {{ opinions|safe }}
+</div>
+
+<div class="mb-3">
+  <a href="{{ url_for('download_file', product_id=product_id, file_format='json') }}" class="btn btn-outline-ceneo btn-sm">JSON</a>
+  <a href="{{ url_for('download_file', product_id=product_id, file_format='csv') }}" class="btn btn-outline-ceneo btn-sm">CSV</a>
+  <a href="{{ url_for('download_file', product_id=product_id, file_format='xlsx') }}" class="btn btn-outline-ceneo btn-sm">XLSX</a>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+  let table = new DataTable('#opinions');
+</script>
 {% endblock %}

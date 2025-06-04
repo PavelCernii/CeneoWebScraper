@@ -1,12 +1,18 @@
 {% extends 'base.html' %}
-{% block title %} Pobieranie opinii o produkcie {% endblock %}
+{% block title %}Pobieranie opinii o produkcie{% endblock %}
 {% block content %}
     {% if error is defined %}
-        <p>{{error}}</p>
+        <p class="alert alert-danger alert-dismissible fade show" role="alert"><i class="bi bi-exclamation-triangle-fill"></i> {{error}}</p>
     {% endif %}
-    <form action="{{url_for('extract')}}" method="post">
-        <label for="product_id">Kod produktu</label>
-        <input type="text" name="product_id" id="product_id" required>
-        <button type="submit">Pobierz opinię</button>
+    <form action="{{url_for('extract')}}" method="post" class="row align-items-center">
+        <div class="col-4 text-end">
+            <label for="product_id">Kod produktu</label>
+        </div>
+        <div class="col-4">
+            <input type="text" name="product_id" id="product_id" required class="form-control">
+        </div>
+        <div class="col-4">
+            <button type="submit" class="btn btn-ceneo">Pobierz opinie</button>
+        </div>
     </form>
 {% endblock %}

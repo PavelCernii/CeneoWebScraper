@@ -1,27 +1,29 @@
 {% extends 'base.html' %}
-{% block title %}Lista produktów{% endblock %}
+{% block page_title %}Lista produktów{% endblock %}
+{% block header_title %}Lista produktów{% endblock %}
 {% block content %}
-<h3>Produkty z zapisanymi opiniami</h3>
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>ID produktu</th>
-      <th>Liczba opinii</th>
-      <th>Średnia ocena</th>
-      <th>Akcje</th>
-    </tr>
-  </thead>
-  <tbody>
+
+<ul class="list-group">
     {% for product in products %}
-    <tr>
-      <td><a href="{{ url_for('product', product_id=product.id, product_name=product.name) }}">{{ product.id }}</a></td>
-      <td>{{ product.opinion_count }}</td>
-      <td>{{ product.avg_rating }}</td>
-      <td>
-        <a href="{{ url_for('product', product_id=product.id, product_name=product.name) }}" class="btn btn-primary btn-sm">Zobacz</a>
-      </td>
-    </tr>
+    <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+        <a type="button" class="btn btn-primary btn-sm" href="{{ url_for('product', product_id=product.id, product_name=product.name) }}">
+            {{ product.id }}
+        </a>
+
+        <span class="ms-2">{{ product.name }}</span>
+
+        <span class="badge bg-primary rounded-pill">Opinie: {{ product.opinion_count }}</span>
+        <span class="badge bg-success rounded-pill">Zalety: {{ product.pros_count }}</span>
+        <span class="badge bg-danger rounded-pill">Wady: {{ product.cons_count }}</span>
+        <span class="badge bg-ceneo rounded-pill">Śr. ocena: {{ product.avg_rating }}</span>
+
+        <div class="ms-auto">
+            <a type="button" class="btn btn-outline-info btn-sm" href="{{ url_for('download_file', product_id=product.id, file_format='csv') }}">CSV</a>
+            <a type="button" class="btn btn-outline-info btn-sm" href="{{ url_for('download_file', product_id=product.id, file_format='xlsx') }}">XLSX</a>
+            <a type="button" class="btn btn-outline-info btn-sm" href="{{ url_for('download_file', product_id=product.id, file_format='json') }}">JSON</a>
+        </div>
+    </li>
     {% endfor %}
-  </tbody>
-</table>
+</ul>
+
 {% endblock %}

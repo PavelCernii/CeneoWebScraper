@@ -6,6 +6,7 @@ from config import headers
 from app import utils
 from bs4 import BeautifulSoup
 import pandas as pd
+from flask import send_file
 
 @app.route("/")
 def index():
@@ -15,9 +16,9 @@ def index():
 def display_form():
     return render_template("extract.html")
 
-@app.route("/", methods=["POST"])
+@app.route("/extract", methods=["POST"])
 def extract():
-    product_id =  request.form.get("product_id")
+    product_id = request.form.get('product_id')
     next_page = f"https://www.ceneo.pl/{product_id}#tab=reviews"
     response = requests.get(next_page, headers=headers)
     if response.status_code == 200:
@@ -48,17 +49,13 @@ def extract():
             except TypeError:
                 next_page = None
         else: print(response.status_code)
-
     if not os.path.exists("./app/data"):
         os.mkdir("./app/data")
-
     if not os.path.exists("./app/data/opinions"):
         os.mkdir("./app/data/opinions")
-
     with open(f"./app/data/opinions/{product_id}.json", "w", encoding="UTF-8") as jf:
         json.dump(all_opinions, jf, indent=4, ensure_ascii=False)
-
-    return redirect(url_for("product", product_id=product_id, product_name=product_name))
+    return redirect(url_for('product', product_id=product_id, product_name=product_name))
 
 @app.route("/products")
 def products():
@@ -69,22 +66,33 @@ def products():
             product_id = filename.replace(".json", "")
             with open(os.path.join(opinions_dir, filename), "r", encoding="utf-8") as f:
                 opinions = json.load(f)
+                if not opinions:
+                    continue
                 opinion_count = len(opinions)
                 stars = []
-                pros = 0
-                cons = 0
+                pros_count = 0
+                cons_count = 0
+
                 for o in opinions:
-                    stars.append(float(o["stars"].split("/")[0].replace(",", ".")) if o["stars"] else 0)
-                    pros += len(o["pros"]) if o.get("pros") else 0
-                    cons += len(o["cons"]) if o.get("cons") else 0
-                avg_rating = round(sum(stars)/len(stars), 2) if stars else 0
+                    if o.get("stars"):
+                        stars.append(float(o["stars"].split("/")[0].replace(",", ".")))
+                    pros_count += len(o.get("pros", []))
+                    cons_count += len(o.get("cons", []))
+
+                avg_rating = round(sum(stars)/len(stars), 2) if stars else "brak danych"
+
+                name = opinions[0].get("content", "Nieznany")[:30] + "..."
+
                 products_list.append({
                     "id": product_id,
-                    "name": opinions[0].get("content", "Nieznany"),
+                    "name": name,
                     "opinion_count": opinion_count,
-                    "avg_rating": avg_rating
+                    "avg_rating": avg_rating,
+                    "pros_count": pros_count,
+                    "cons_count": cons_count
                 })
     return render_template("products.html", products=products_list)
+
 
 
 @app.route("/author")
@@ -112,3 +120,20 @@ def product(product_id):
         pros_count=pros_count,
         cons_count=cons_count
     )
+
+
+@app.route("/download/<product_id>/<file_format>")
+def download_file(product_id, file_format):
+    df = pd.read_json(f"./app/data/opinions/{product_id}.json")
+    file_path = f"./app/data/{product_id}.{file_format}"
+
+    if file_format == "json":
+        df.to_json(file_path, orient="records", force_ascii=False, indent=4)
+    elif file_format == "csv":
+        df.to_csv(file_path, index=False)
+    elif file_format == "xlsx":
+        df.to_excel(file_path, index=False)
+    else:
+        return "Nieobsługiwany format", 400
+
+    return send_file(file_path, as_attachment=True)
