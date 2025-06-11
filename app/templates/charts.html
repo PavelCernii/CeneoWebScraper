@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Wykresy – {{ product_id }}{% endblock %}
+{% block header_title %}Wykresy opinii – {{ product_name }}{% endblock %}
+
+{% block content %}
+<section class="section text-center">
+  <h3 class="mb-4">Rozkład rekomendacji</h3>
+  <div class="chart-wrapper">
+    <img src="{{ url_for('static', filename='images/charts/' + product_id + '_pie.png') }}" alt="Wykres rekomendacji" class="chart-img">
+  </div>
+
+  <div class="mt-4">
+    <a href="{{ url_for('product', product_id=product_id, product_name=product_name) }}" class="btn btn-outline-ceneo">
+      Powrót do opinii
+    </a>
+  </div>
+</section>
+{% endblock %}

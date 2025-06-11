@@ -1,29 +1,35 @@
 {% extends 'base.html' %}
+
 {% block page_title %}Lista produktów{% endblock %}
 {% block header_title %}Lista produktów{% endblock %}
+
 {% block content %}
-
-<ul class="list-group">
+<section class="section">
+  <ul class="product-list">
     {% for product in products %}
-    <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-        <a type="button" class="btn btn-primary btn-sm" href="{{ url_for('product', product_id=product.id, product_name=product.name) }}">
-            {{ product.id }}
+    <li class="product-item">
+      <div class="product-id">
+        <a href="{{ url_for('product', product_id=product.id, product_name=product.name) }}" class="btn btn-ceneo btn-sm">
+          {{ product.id }}
         </a>
+      </div>
 
-        <span class="ms-2">{{ product.name }}</span>
-
-        <span class="badge bg-primary rounded-pill">Opinie: {{ product.opinion_count }}</span>
-        <span class="badge bg-success rounded-pill">Zalety: {{ product.pros_count }}</span>
-        <span class="badge bg-danger rounded-pill">Wady: {{ product.cons_count }}</span>
-        <span class="badge bg-ceneo rounded-pill">Śr. ocena: {{ product.avg_rating }}</span>
-
-        <div class="ms-auto">
-            <a type="button" class="btn btn-outline-info btn-sm" href="{{ url_for('download_file', product_id=product.id, file_format='csv') }}">CSV</a>
-            <a type="button" class="btn btn-outline-info btn-sm" href="{{ url_for('download_file', product_id=product.id, file_format='xlsx') }}">XLSX</a>
-            <a type="button" class="btn btn-outline-info btn-sm" href="{{ url_for('download_file', product_id=product.id, file_format='json') }}">JSON</a>
+      <div class="product-info">
+        <div class="badges">
+          <span class="badge bg-primary">Opinie: {{ product.opinion_count }}</span>
+          <span class="badge bg-success">Zalety: {{ product.pros_count }}</span>
+          <span class="badge bg-danger">Wady: {{ product.cons_count }}</span>
+          <span class="badge bg-ceneo">Śr. ocena: {{ product.avg_rating }}</span>
         </div>
-    </li>
-    {% endfor %}
-</ul>
+      </div>
 
+        <div class="download-links mt-2">
+            <a href="{{ url_for('download_file', product_id=product.id, file_format='csv') }}" class="btn btn-outline-info btn-sm">CSV</a>
+            <a href="{{ url_for('download_file', product_id=product.id, file_format='xlsx') }}" class="btn btn-outline-info btn-sm">XLSX</a>
+            <a href="{{ url_for('download_file', product_id=product.id, file_format='json') }}" class="btn btn-outline-info btn-sm">JSON</a>
+        </div>
+
+    {% endfor %}
+  </ul>
+</section>
 {% endblock %}

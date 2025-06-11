@@ -1,8 +1,21 @@
 {% extends 'base.html' %}
-{% block title %} {% endblock %}
+
+{% block page_title %}Autor{% endblock %}
+{% block header_title %}O autorze projektu{% endblock %}
+
 {% block content %}
-    <h3>Informacje o autorze</h3>
-    <p>Aplikacja stworzona przez studenta Pavel Cernii w ramach zajęć na Uniwersytecie Ekonomicznym w Krakowie.</p>
-    <p>Kontakt: <a href="236159@student.uek.krakow.pl">236159@student.uek.krakow.pl</a></p>
-    <p>Link do mojego GitHub: <a href="https://github.com/PavelCernii">przejdź do GitHub</a></p>
+<section class="section text-center">
+  <h3 class="mb-4">Informacje o autorze</h3>
+
+  <div class="author-box">
+    <p>Aplikacja została stworzona przez <strong>studenta Pavel Cernii</strong> w ramach zajęć na <strong>Uniwersytecie Ekonomicznym w Krakowie</strong>.</p>
+    <p>Projekt służy do analizy opinii produktów ze strony <a href="https://www.ceneo.pl" target="_blank" rel="noopener noreferrer">Ceneo.pl</a>, wykorzystując technologie <code>Flask</code>, <code>Pandas</code> i <code>Matplotlib</code>.</p>
+    <p>Kontakt mailowy: <a href="mailto:236159@student.uek.krakow.pl">236159@student.uek.krakow.pl</a></p>
+    <p>GitHub: <a href="https://github.com/PavelCernii" target="_blank" rel="noopener noreferrer">przejdź do GitHub</a></p>
+  </div>
+
+  <div class="mt-4">
+    <a href="{{ url_for('index') }}" class="btn btn-outline-ceneo">Powrót na stronę główną</a>
+  </div>
+</section>
 {% endblock %}

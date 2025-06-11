@@ -1,18 +1,26 @@
 {% extends 'base.html' %}
-{% block title %}Pobieranie opinii o produkcie{% endblock %}
+{% block page_title %}Pobieranie opinii o produkcie{% endblock %}
+{% block header_title %}Pobierz opinie z Ceneo.pl{% endblock %}
+
 {% block content %}
-    {% if error is defined %}
-        <p class="alert alert-danger alert-dismissible fade show" role="alert"><i class="bi bi-exclamation-triangle-fill"></i> {{error}}</p>
-    {% endif %}
-    <form action="{{url_for('extract')}}" method="post" class="row align-items-center">
-        <div class="col-4 text-end">
-            <label for="product_id">Kod produktu</label>
-        </div>
-        <div class="col-4">
-            <input type="text" name="product_id" id="product_id" required class="form-control">
-        </div>
-        <div class="col-4">
-            <button type="submit" class="btn btn-ceneo">Pobierz opinie</button>
-        </div>
-    </form>
+  {% if error is defined %}
+    <div class="alert alert-danger d-flex align-items-center" role="alert">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ error }}
+    </div>
+  {% endif %}
+
+  <form action="{{ url_for('extract') }}" method="post" class="row g-3 mt-2">
+    <div class="col-md-6 offset-md-3">
+      <label for="product_id" class="form-label">
+        <i class="bi bi-upc-scan"></i> Kod produktu:
+      </label>
+      <input type="text" class="form-control" id="product_id" name="product_id" placeholder="np. 12345678" required>
+    </div>
+
+    <div class="col-md-6 offset-md-3">
+      <button type="submit" class="btn btn-ceneo w-100">
+        <i class="bi bi-download me-1"></i> Pobierz opinie
+      </button>
+    </div>
+  </form>
 {% endblock %}
